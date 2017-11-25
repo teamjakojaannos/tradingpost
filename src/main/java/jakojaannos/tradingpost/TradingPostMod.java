@@ -1,4 +1,4 @@
-package com.example.examplemod;
+package jakojaannos.tradingpost;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,7 +21,7 @@ public class TradingPostMod {
     public static final String VERSION = "0.0.0";
     
 	
-	@SidedProxy(clientSide = "com.example.examplemod.ClientProxy", serverSide = "com.example.examplemod.CommonProxy")
+	@SidedProxy(clientSide = "ClientProxy", serverSide = "CommonProxy")
 	public static CommonProxy proxy;
 	
 	@Instance(MODID)
