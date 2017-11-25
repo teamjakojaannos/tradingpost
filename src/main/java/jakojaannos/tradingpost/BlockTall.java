@@ -42,13 +42,13 @@ public class BlockTall extends Block {
 		
 
 		// this is the top block -> check if there is a bottom block under it and destroy it
-//		if (state.getValue(isTop) && worldIn.getBlockState(blockDown).getBlock() == this) {
-//			worldIn.setBlockToAir(blockDown);
-//		} else {
-//			if(worldIn.getBlockState(blockUp).getBlock()==this){
-//				worldIn.setBlockToAir(blockUp);
-//			}
-//		}
+		if (state.getValue(isTop) && worldIn.getBlockState(blockDown).getBlock() == this) {
+			worldIn.setBlockToAir(blockDown);
+		} else {
+			if(worldIn.getBlockState(blockUp).getBlock()==this){
+				worldIn.setBlockToAir(blockUp);
+			}
+		}
 		
 		
 		
