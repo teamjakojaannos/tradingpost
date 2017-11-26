@@ -42,14 +42,15 @@ public class BlockTall extends Block {
 
 		// this is the top block -> check if there is a bottom block under it
 		// and destroy it
-		if (state.getValue(isTop) && worldIn.getBlockState(blockDown).getBlock() == this) {
+		if (player.capabilities.isCreativeMode && state.getValue(isTop) && worldIn.getBlockState(blockDown).getBlock() == this) {
 			worldIn.setBlockToAir(blockDown);
-		} else {
-			if (worldIn.getBlockState(blockUp).getBlock() == this) {
-				worldIn.setBlockToAir(blockUp);
+		} else if (worldIn.getBlockState(blockUp).getBlock() == this) {
+			if (player.capabilities.isCreativeMode) {
+				worldIn.setBlockToAir(pos);
 			}
-		}
 
+			worldIn.setBlockToAir(blockUp);
+		}
 	}
 
 	public EnumPushReaction getMobilityFlag(IBlockState state) {
@@ -57,35 +58,33 @@ public class BlockTall extends Block {
 	}
 
 	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
-		BlockPos blockDown = pos.down();
-		BlockPos blockUp = pos.up();
+        BlockPos blockDown = pos.down();
 
-		boolean destroy = false;
+        if (state.getValue(isTop)) {
+			IBlockState stateBelow = worldIn.getBlockState(blockDown);
 
-		if (state.getValue(isTop) && worldIn.getBlockState(blockDown).getBlock() != this) {
-			// upper half, the block below me is not BlockTall
-			worldIn.setBlockToAir(pos);
-			destroy = true;
-		} else {
-			// lower half
-			if (worldIn.getBlockState(blockUp).getBlock() != this || //
-			// the block above me is not BlockTall
-					!worldIn.getBlockState(blockDown).isSideSolid(worldIn, blockDown, EnumFacing.UP)) {
-				// the block below me is not solid
+			if (stateBelow.getBlock() != this) {
 				worldIn.setBlockToAir(pos);
-				destroy = true;
+			}
+			else {
+				stateBelow.neighborChanged(worldIn, blockDown, blockIn, fromPos);
+			}
+		} else {
+			BlockPos blockUp = pos.up();
+
+			// lower half
+			if (worldIn.getBlockState(blockUp).getBlock() != this) {
+				worldIn.setBlockToAir(pos);
+
+                if (!worldIn.isRemote) {
+                    this.dropBlockAsItem(worldIn, pos, state, 0);
+                }
 			}
 		}
-
-		if (destroy && !worldIn.isRemote) {
-			this.dropBlockAsItem(worldIn, pos, state, 0);
-		}
-
 	}
 
 	public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-
-		return TRDBlocks.ITEM_TALL;
+		return state.getValue(isTop) ? Items.AIR : TRDBlocks.ITEM_TALL;
 	}
 
 	public int getMetaFromState(IBlockState state) {
