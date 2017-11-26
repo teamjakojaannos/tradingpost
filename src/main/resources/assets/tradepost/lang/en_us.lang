@@ -1,0 +1,5 @@
+tile.tallBlock.name=Tall Block
+item.tallBlock.name=Tall Block
+tile.testBlock.name=Test Block
+
+itemGroup.devnull=dev/NULL/

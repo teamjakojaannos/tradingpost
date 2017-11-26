@@ -22,7 +22,7 @@ public class ItemTall extends Item {
 
 	public ItemTall() {
 		this.block = TRDBlocks.BLOCK_TALL;
-		setUnlocalizedName("Tallitem");
+		setUnlocalizedName("tallBlock");
 		setCreativeTab(TRDCreativeTabs.DEVNULL);
 	}
 

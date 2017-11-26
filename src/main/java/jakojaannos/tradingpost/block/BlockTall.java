@@ -25,7 +25,7 @@ public class BlockTall extends Block {
 		super(Material.WOOD);
 		setHardness(1.2F);
 		setSoundType(SoundType.WOOD);
-		setUnlocalizedName("TallBlock");
+		setUnlocalizedName("tallBlock");
 		setDefaultState(this.blockState.getBaseState().withProperty(isTop, false));
 	}
 
