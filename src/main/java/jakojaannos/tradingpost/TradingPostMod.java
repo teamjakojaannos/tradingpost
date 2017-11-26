@@ -21,7 +21,7 @@ public class TradingPostMod {
     public static final String VERSION = "0.0.0";
     
 	
-	@SidedProxy(clientSide = "jakojaannos.tradingpost.ClientProxy", serverSide = "jakojaannos.tradingpost.CommonProxy")
+	@SidedProxy(clientSide = "jakojaannos.tradingpost.client.ClientProxy", serverSide = "jakojaannos.tradingpost.CommonProxy")
 	public static CommonProxy proxy;
 	
 	@Instance(MODID)

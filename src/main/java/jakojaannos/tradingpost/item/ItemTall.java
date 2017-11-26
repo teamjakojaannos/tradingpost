@@ -1,5 +1,8 @@
-package jakojaannos.tradingpost;
+package jakojaannos.tradingpost.item;
 
+import jakojaannos.tradingpost.TRDBlocks;
+import jakojaannos.tradingpost.TRDCreativeTabs;
+import jakojaannos.tradingpost.block.BlockTall;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;

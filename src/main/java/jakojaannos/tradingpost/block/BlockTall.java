@@ -1,7 +1,8 @@
-package jakojaannos.tradingpost;
+package jakojaannos.tradingpost.block;
 
 import java.util.Random;
 
+import jakojaannos.tradingpost.TRDBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.EnumPushReaction;
@@ -101,4 +102,13 @@ public class BlockTall extends Block {
 			return getDefaultState().withProperty(isTop, false);
 	}
 
+	@Override
+	public boolean isFullBlock(IBlockState state) {
+		return state.getValue(isTop);
+	}
+
+	@Override
+	public boolean isOpaqueCube(IBlockState state) {
+		return state.getValue(isTop);
+	}
 }

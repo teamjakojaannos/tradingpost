@@ -1,0 +1,13 @@
+{
+  "forge_marker": 1,
+  "variants": {
+    "istop": {
+      "true": {
+        "model": "tradepost:tallblock_top"
+      },
+      "false": {
+        "model": "tradepost:tallblock_bottom"
+      }
+    }
+  }
+}
