@@ -23,6 +23,10 @@ public class TRDBlocks {
 
     public static Item ITEM_TALL = new ItemTall().setRegistryName(TradingPostMod.MODID, "tallblock");
 
+
+    /**
+     * Registers blocks
+     */
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         event.getRegistry().registerAll(
@@ -31,6 +35,9 @@ public class TRDBlocks {
         );
     }
 
+    /**
+     * Registers ItemBlocks
+     */
     @SubscribeEvent
     public static void registerItemBlocks(RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(
@@ -39,16 +46,26 @@ public class TRDBlocks {
         );
     }
 
+    /**
+     * Registers ItemBlock models
+     * TODO: Debug if this event handler crashes on the server
+     */
     @SubscribeEvent
     public static void registerModels(ModelRegistryEvent event) {
         registerItemModels();
         registerBlockModels();
     }
 
+    /**
+     * Registers ItemBlock models for blocks with manually created item block
+     */
     private static void registerItemModels() {
         registerItemModel(ITEM_TALL);
     }
 
+    /**
+     * Registers ItemBlock models for blocks with automatically generated item block
+     */
     private static void registerBlockModels() {
         registerItemModel(TEST_BLOCK);
     }
