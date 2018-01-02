@@ -3,7 +3,7 @@ package jakojaannos.tradingpost;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import jakojaannos.tradingpost.block.IGuiTrd;
+import jakojaannos.tradingpost.block.GuiHandlerTrd;
 import jakojaannos.tradingpost.block.TileEntityTrd;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -32,6 +32,6 @@ public class TradingPostMod {
 	@EventHandler
 	public void init(FMLPreInitializationEvent event) {
 		GameRegistry.registerTileEntity(TileEntityTrd.class, MODID + ":tiletradingpost");
-		NetworkRegistry.INSTANCE.registerGuiHandler(this, new IGuiTrd());
+		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandlerTrd());
 	}
 }

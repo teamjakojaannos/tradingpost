@@ -10,14 +10,14 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiTrd extends GuiContainer {
+public class GuiContainerTrd extends GuiContainer {
 
 //	private static final ResourceLocation grinderGuiTextures = new ResourceLocation(
 //			TradingPostMod.MODID + ":textures/gui/container/post.png");
 	private final InventoryPlayer inventoryPlayer;
 	private final IInventory tileGrinder;
 
-	public GuiTrd(InventoryPlayer parInventoryPlayer, IInventory parInventoryGrinder) {
+	public GuiContainerTrd(InventoryPlayer parInventoryPlayer, IInventory parInventoryGrinder) {
 		super(new ContainerTrd(parInventoryPlayer, parInventoryGrinder));
 		inventoryPlayer = parInventoryPlayer;
 		tileGrinder = parInventoryGrinder;

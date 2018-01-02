@@ -122,7 +122,7 @@ public class BlockTall extends BlockContainer {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
 			EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if (!worldIn.isRemote) {
-			playerIn.openGui(TradingPostMod.instance, IGuiTrd.GUI_IDS.TRADING_POST.ordinal(), worldIn, pos.getX(),
+			playerIn.openGui(TradingPostMod.instance, GuiHandlerTrd.GUI_IDS.TRADING_POST.ordinal(), worldIn, pos.getX(),
 					pos.getY(), pos.getZ());
 		}
 

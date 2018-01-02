@@ -7,7 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
-public class IGuiTrd implements IGuiHandler {
+public class GuiHandlerTrd implements IGuiHandler {
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
@@ -33,7 +33,7 @@ public class IGuiTrd implements IGuiHandler {
 		if (tileEntity != null) {
 			switch (GUI_IDS.values()[ID]) {
 			case TRADING_POST:
-				return new GuiTrd(player.inventory, (IInventory) tileEntity);
+				return new GuiContainerTrd(player.inventory, (IInventory) tileEntity);
 			default:
 				break;
 			}
