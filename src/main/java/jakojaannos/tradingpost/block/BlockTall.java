@@ -3,7 +3,9 @@ package jakojaannos.tradingpost.block;
 import java.util.Random;
 
 import jakojaannos.tradingpost.TRDBlocks;
+import jakojaannos.tradingpost.TradingPostMod;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
@@ -13,11 +15,13 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class BlockTall extends Block {
+public class BlockTall extends BlockContainer {
 
 	public static final PropertyBool isTop = PropertyBool.create("istop");
 
@@ -43,7 +47,8 @@ public class BlockTall extends Block {
 
 		// this is the top block -> check if there is a bottom block under it
 		// and destroy it
-		if (player.capabilities.isCreativeMode && state.getValue(isTop) && worldIn.getBlockState(blockDown).getBlock() == this) {
+		if (player.capabilities.isCreativeMode && state.getValue(isTop)
+				&& worldIn.getBlockState(blockDown).getBlock() == this) {
 			worldIn.setBlockToAir(blockDown);
 		} else if (worldIn.getBlockState(blockUp).getBlock() == this) {
 			if (player.capabilities.isCreativeMode) {
@@ -59,15 +64,14 @@ public class BlockTall extends Block {
 	}
 
 	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
-        BlockPos blockDown = pos.down();
+		BlockPos blockDown = pos.down();
 
-        if (state.getValue(isTop)) {
+		if (state.getValue(isTop)) {
 			IBlockState stateBelow = worldIn.getBlockState(blockDown);
 
 			if (stateBelow.getBlock() != this) {
 				worldIn.setBlockToAir(pos);
-			}
-			else {
+			} else {
 				stateBelow.neighborChanged(worldIn, blockDown, blockIn, fromPos);
 			}
 		} else {
@@ -77,9 +81,9 @@ public class BlockTall extends Block {
 			if (worldIn.getBlockState(blockUp).getBlock() != this) {
 				worldIn.setBlockToAir(pos);
 
-                if (!worldIn.isRemote) {
-                    this.dropBlockAsItem(worldIn, pos, state, 0);
-                }
+				if (!worldIn.isRemote) {
+					this.dropBlockAsItem(worldIn, pos, state, 0);
+				}
 			}
 		}
 	}
@@ -110,5 +114,23 @@ public class BlockTall extends Block {
 	@Override
 	public boolean isOpaqueCube(IBlockState state) {
 		return state.getValue(isTop);
+	}
+
+	/**
+	 * Called when the block is right clicked by a player.
+	 */
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
+			EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+		if (!worldIn.isRemote) {
+			playerIn.openGui(TradingPostMod.instance, IGuiTrd.GUI_IDS.TRADING_POST.ordinal(), worldIn, pos.getX(),
+					pos.getY(), pos.getZ());
+		}
+
+		return true;
+	}
+
+	@Override
+	public TileEntity createNewTileEntity(World worldIn, int meta) {
+		return new TileEntityTrd();
 	}
 }
