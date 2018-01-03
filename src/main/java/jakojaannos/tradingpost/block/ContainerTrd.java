@@ -85,7 +85,7 @@ public class ContainerTrd extends Container {
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer playerIn, int slotIndex) {
-		ItemStack itemStack1 = null;
+		ItemStack itemStack1 = ItemStack.EMPTY;
 		Slot slot = (Slot) inventorySlots.get(slotIndex);
 
 		if (slot != null && slot.getHasStack()) {
@@ -94,7 +94,7 @@ public class ContainerTrd extends Container {
 
 			if (slotIndex == TileEntityTrd.slotEnum.OUTPUT_SLOT.ordinal()) {
 				if (!mergeItemStack(itemStack2, sizeInventory, sizeInventory + 36, true)) {
-					return null;
+					return ItemStack.EMPTY;
 				}
 
 				slot.onSlotChange(itemStack2, itemStack1);
@@ -112,26 +112,26 @@ public class ContainerTrd extends Container {
 					// inventory
 					// slots
 					if (!mergeItemStack(itemStack2, sizeInventory + 27, sizeInventory + 36, false)) {
-						return null;
+						return ItemStack.EMPTY;
 					}
 				} else if (slotIndex >= sizeInventory + 27 && slotIndex < sizeInventory + 36
 						&& !mergeItemStack(itemStack2, sizeInventory + 1, sizeInventory + 27, false)) // hotbar
 				// slots
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 			} else if (!mergeItemStack(itemStack2, sizeInventory, sizeInventory + 36, false)) {
-				return null;
+				return ItemStack.EMPTY;
 			}
 
 			if (itemStack2.getCount() == 0) {
-				slot.putStack((ItemStack) null);
+				slot.putStack(ItemStack.EMPTY);
 			} else {
 				slot.onSlotChanged();
 			}
 
 			if (itemStack2.getCount() == itemStack1.getCount()) {
-				return null;
+				return ItemStack.EMPTY;
 			}
 
 			slot.onTake(playerIn, itemStack2);
