@@ -128,8 +128,9 @@ public class BlockTall extends BlockContainer {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
 			EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if (!worldIn.isRemote) {
+			int y = pos.getY() - (state.getValue(isTop) ? 1 : 0);
 			playerIn.openGui(TradingPostMod.instance, GuiHandlerTrd.GUI_IDS.TRADING_POST.ordinal(), worldIn, pos.getX(),
-					pos.getY(), pos.getZ());
+					y, pos.getZ());
 		}
 
 		return true;
@@ -137,6 +138,6 @@ public class BlockTall extends BlockContainer {
 
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
-		return new TileEntityTrd();
+		return getStateFromMeta(meta).getValue(isTop) ? null : new TileEntityTrd();
 	}
 }
