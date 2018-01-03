@@ -7,110 +7,92 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ContainerTradePost extends Container {
 
-	private final IInventory tileGrinder;
-	private final int sizeInventory;
-	// private int ticksGrindingItemSoFar;
-	// private int ticksPerItem;
-	// private int timeCanGrind;
+    private final IInventory tileTradePost;
+    private final int sizeInventory;
 
-	public ContainerTradePost(InventoryPlayer parInventoryPlayer, IInventory parIInventory) {
-		tileGrinder = parIInventory;
-		sizeInventory = tileGrinder.getSizeInventory();
-		addSlotToContainer(new Slot(tileGrinder, TileEntityTradePost.slotEnum.INPUT_SLOT.ordinal(), 56, 35));
-		addSlotToContainer(new Slot(tileGrinder, TileEntityTradePost.slotEnum.OUTPUT_SLOT.ordinal(), 116, 35));
+    public ContainerTradePost(InventoryPlayer playerInventory, IInventory inventory) {
+        tileTradePost = inventory;
+        sizeInventory = tileTradePost.getSizeInventory();
 
-		// add player inventory slots
-		// note that the slot numbers are within the player inventory so can
-		// be same as the tile entity inventory
-		for (int i = 0; i < 3; ++i) {
-			for (int j = 0; j < 9; ++j) {
-				addSlotToContainer(new Slot(parInventoryPlayer, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
-			}
-		}
+        // Add player inventory slots
+        for (int row = 0; row < 4; ++row) {
+            for (int column = 0; column < 9; ++column) {
+                final int slotIndex = column + row * 9;
+                // The first row (the first 9 slots) is the hotbar
+                if (slotIndex < 9) {
+                    addSlotToContainer(new Slot(playerInventory, slotIndex, 8 + column * 18, 142));
+                }
+                // The rest are the 3x9 inventory
+                else {
+                    addSlotToContainer(new Slot(playerInventory, slotIndex, 8 + column * 18, 84 + (row - 1) * 18));
+                }
+            }
+        }
 
-		// add hotbar slots
-		for (int i = 0; i < 9; ++i) {
-			addSlotToContainer(new Slot(parInventoryPlayer, i, 8 + i * 18, 142));
-		}
-	}
+        // Add tile-entity slots
+        addSlotToContainer(new Slot(tileTradePost, TileEntityTradePost.slotEnum.INPUT_SLOT.ordinal(), 56, 35));
+        addSlotToContainer(new Slot(tileTradePost, TileEntityTradePost.slotEnum.OUTPUT_SLOT.ordinal(), 116, 35));
+    }
 
-	// @Override
-	// public void addCraftingToCrafters(ICrafting listener) {
-	// super.addCraftingToCrafters(listener);
-	// listener.func_175173_a(this, tileGrinder);
-	// }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void updateProgressBar(int id, int data) {
-		// tileGrinder.setField(id, data);
-	}
+    @Override
+    public boolean canInteractWith(EntityPlayer playerIn) {
+        return tileTradePost.isUsableByPlayer(playerIn);
+    }
 
-	@Override
-	public boolean canInteractWith(EntityPlayer playerIn) {
-		return tileGrinder.isUsableByPlayer(playerIn);
-	}
+    /**
+     * Moves items around when shift-clicked
+     * <p>
+     * Slot indices:
+     * 0-35: Player inventory
+     * - 0-8:   hotbar
+     * - 9-35:  inventory
+     * 36-37: tile-entity
+     * - 36:	input
+     * - 37:	output
+     */
+    @Override
+    public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex) {
+        final Slot clickedSlot = getSlot(slotIndex);
 
-	@Override
-	public ItemStack transferStackInSlot(EntityPlayer playerIn, int slotIndex) {
-		ItemStack itemStack1 = ItemStack.EMPTY;
-		Slot slot = (Slot) inventorySlots.get(slotIndex);
+        // Don't move anything if there is nothing to move
+        if (!clickedSlot.getHasStack()) {
+            return ItemStack.EMPTY;
+        }
 
-		if (slot != null && slot.getHasStack()) {
-			ItemStack itemStack2 = slot.getStack();
-			itemStack1 = itemStack2.copy();
+        final ItemStack clickedStack = clickedSlot.getStack();
 
-			if (slotIndex == TileEntityTradePost.slotEnum.OUTPUT_SLOT.ordinal()) {
-				if (!mergeItemStack(itemStack2, sizeInventory, sizeInventory + 36, true)) {
-					return ItemStack.EMPTY;
-				}
+        // If slot in player inventory was clicked
+        if (slotIndex < 36) {
+            // Try to merge with input slot
+            if (!mergeItemStack(clickedStack, 36, 37, false)) {
+                return ItemStack.EMPTY;
+            }
+        }
+        // Slot in tile-entity inventory was clicked
+        else {
+            // Try to merge with player inventory. Hotbar slots are first so they are tested first, allowing us to use
+            // a single mergeItemStack call for whole inventory.
+            if (!mergeItemStack(clickedStack, 0, 36, false)) {
+                return ItemStack.EMPTY;
+            }
+        }
 
-				slot.onSlotChange(itemStack2, itemStack1);
-			} else if (slotIndex != TileEntityTradePost.slotEnum.INPUT_SLOT.ordinal()) {
-				// check if there is a grinding recipe for the stack
-				// if (GrinderRecipes.instance().getGrindingResult(itemStack2)
-				// != null) {
-				// if (!mergeItemStack(itemStack2, 0, 1, false)) {
-				// return null;
-				// }
-				// } else
+        // None of the above returned ItemStack.EMPTY, which means that the stack was successfully transferred
+        // Now, if stack is empty, we know that the whole stack was moved and we need to mark the source slot empty
+        if (clickedStack.isEmpty()) {
+            clickedSlot.putStack(ItemStack.EMPTY);
+        }
+        // Stack is not empty, it was transferred only partially. Notify listeners of that change.
+        else {
+            clickedSlot.onSlotChanged();
+        }
 
-				if (slotIndex >= sizeInventory && slotIndex < sizeInventory + 27) {
-					// player
-					// inventory
-					// slots
-					if (!mergeItemStack(itemStack2, sizeInventory + 27, sizeInventory + 36, false)) {
-						return ItemStack.EMPTY;
-					}
-				} else if (slotIndex >= sizeInventory + 27 && slotIndex < sizeInventory + 36
-						&& !mergeItemStack(itemStack2, sizeInventory + 1, sizeInventory + 27, false)) // hotbar
-				// slots
-				{
-					return ItemStack.EMPTY;
-				}
-			} else if (!mergeItemStack(itemStack2, sizeInventory, sizeInventory + 36, false)) {
-				return ItemStack.EMPTY;
-			}
-
-			if (itemStack2.getCount() == 0) {
-				slot.putStack(ItemStack.EMPTY);
-			} else {
-				slot.onSlotChanged();
-			}
-
-			if (itemStack2.getCount() == itemStack1.getCount()) {
-				return ItemStack.EMPTY;
-			}
-
-			slot.onTake(playerIn, itemStack2);
-		}
-
-		return itemStack1;
-	}
+        clickedSlot.onTake(player, clickedStack);
+        return clickedStack.copy();
+    }
 
 }

@@ -5,20 +5,27 @@ import jakojaannos.tradingpost.inventory.ContainerTradePost;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityLockable;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
-public class TileEntityTradePost extends TileEntityLockable implements ITickable, ISidedInventory {
+public class TileEntityTradePost extends TileEntity implements ITickable, IInventory {
 
 	private static final Logger LOGGER = LogManager.getLogger(ModInfo.MODID);
 
@@ -27,9 +34,6 @@ public class TileEntityTradePost extends TileEntityLockable implements ITickable
 		INPUT_SLOT, OUTPUT_SLOT
 	}
 
-	private static final int[] slotsTop = new int[] { slotEnum.INPUT_SLOT.ordinal() };
-	private static final int[] slotsBottom = new int[] { slotEnum.OUTPUT_SLOT.ordinal() };
-	private static final int[] slotsSides = new int[] {};
 	private ItemStack[] itemsInSlots = new ItemStack[2];
 
 	@Nonnull
@@ -45,6 +49,8 @@ public class TileEntityTradePost extends TileEntityLockable implements ITickable
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+		super.writeToNBT(compound);
+
 		// Write items to a list
 		NBTTagList itemList = new NBTTagList();
 		for (int i = 0; i < itemsInSlots.length; i++) {
@@ -64,7 +70,7 @@ public class TileEntityTradePost extends TileEntityLockable implements ITickable
 			compound.setString("CustomName", customName);
 		}
 
-		return super.writeToNBT(compound);
+		return compound;
 	}
 
 	@Override
@@ -80,7 +86,7 @@ public class TileEntityTradePost extends TileEntityLockable implements ITickable
 			int slot = slotCompound.getByte("Slot");
 
 			if (slot >= 0 && slot < itemsInSlots.length) {
-				itemsInSlots[slot].deserializeNBT(slotCompound);
+				itemsInSlots[slot] = new ItemStack(slotCompound);
 			} else {
 				LOGGER.warn("Invalid slot index while deserializing Trade Post items: {}", slot);
 			}
@@ -126,6 +132,7 @@ public class TileEntityTradePost extends TileEntityLockable implements ITickable
 			}
 		}
 
+		markDirty();
 		return itemstack;
 	}
 
@@ -137,23 +144,12 @@ public class TileEntityTradePost extends TileEntityLockable implements ITickable
 
 	@Override
 	public void setInventorySlotContents(int index, ItemStack stack) {
-		// boolean isSameItemStackAlreadyInSlot = stack != null &&
-		// stack.isItemEqual(grinderItemStackArray[index])
-		// && ItemStack.areItemStackTagsEqual(stack,
-		// grinderItemStackArray[index]);
 		itemsInSlots[index] = stack;
 
-		if (stack != null && stack.getCount() > getInventoryStackLimit()) {
+		if (!stack.isEmpty() && stack.getCount() > getInventoryStackLimit()) {
 			stack.setCount(getInventoryStackLimit());
 		}
-
-		// if input slot, reset the grinding timers
-		// if (index == slotEnum.INPUT_SLOT.ordinal() &&
-		// !isSameItemStackAlreadyInSlot) {
-		// ticksPerItem = timeToGrindOneItem(stack);
-		// ticksGrindingItemSoFar = 0;
-		// markDirty();
-		// }
+		markDirty();
 	}
 
 	@Override
@@ -201,6 +197,11 @@ public class TileEntityTradePost extends TileEntityLockable implements ITickable
 	}
 
 	@Override
+	public ITextComponent getDisplayName() {
+		return new TextComponentTranslation(getName());
+	}
+
+	@Override
 	public String getName() {
 		return hasCustomName() ? customName : "container.post";
 	}
@@ -215,31 +216,34 @@ public class TileEntityTradePost extends TileEntityLockable implements ITickable
 	}
 
 	@Override
-	public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
-		return new ContainerTradePost(playerInventory, this);
-	}
-
-	@Override
-	public String getGuiID() {
-		return "tradingpost:tall";
-	}
-
-	@Override
-	public int[] getSlotsForFace(EnumFacing side) {
-		return side == EnumFacing.DOWN ? slotsBottom : (side == EnumFacing.UP ? slotsTop : slotsSides);
-	}
-
-	@Override
-	public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
-		return isItemValidForSlot(index, itemStackIn);
-	}
-
-	@Override
-	public boolean canExtractItem(int parSlotIndex, ItemStack parStack, EnumFacing parFacing) {
-		return true;
-	}
-
-	@Override
 	public void update() {
+	}
+
+
+	// Network sync
+
+	@Nullable
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		NBTTagCompound updateTag = getUpdateTag();
+		return new SPacketUpdateTileEntity(pos, 0, updateTag);
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+		NBTTagCompound updateTag = pkt.getNbtCompound();
+		handleUpdateTag(updateTag);
+	}
+
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		NBTTagCompound updateTag = new NBTTagCompound();
+		writeToNBT(updateTag);
+		return updateTag;
+	}
+
+	@Override
+	public void handleUpdateTag(NBTTagCompound updateTag) {
+		readFromNBT(updateTag);
 	}
 }
