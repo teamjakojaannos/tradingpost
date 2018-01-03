@@ -2,8 +2,10 @@ package jakojaannos.tradingpost.block;
 
 import java.util.Random;
 
-import jakojaannos.tradingpost.TRDBlocks;
+import jakojaannos.tradingpost.TPostGuiHandler;
+import jakojaannos.tradingpost.init.TPostBlocks;
 import jakojaannos.tradingpost.TradingPostMod;
+import jakojaannos.tradingpost.tileentity.TileEntityTradePost;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.SoundType;
@@ -90,7 +92,7 @@ public class BlockTall extends BlockContainer {
 	}
 
 	public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-		return state.getValue(isTop) ? Items.AIR : TRDBlocks.ITEM_TALL;
+		return state.getValue(isTop) ? Items.AIR : TPostBlocks.ITEM_TALL;
 	}
 
 	public int getMetaFromState(IBlockState state) {
@@ -129,7 +131,7 @@ public class BlockTall extends BlockContainer {
 			EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if (!worldIn.isRemote) {
 			int y = pos.getY() - (state.getValue(isTop) ? 1 : 0);
-			playerIn.openGui(TradingPostMod.instance, GuiHandlerTrd.GUI_IDS.TRADING_POST.ordinal(), worldIn, pos.getX(),
+			playerIn.openGui(TradingPostMod.instance, TPostGuiHandler.EGuiIds.TRADING_POST.ordinal(), worldIn, pos.getX(),
 					y, pos.getZ());
 		}
 
@@ -138,6 +140,6 @@ public class BlockTall extends BlockContainer {
 
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
-		return getStateFromMeta(meta).getValue(isTop) ? null : new TileEntityTrd();
+		return getStateFromMeta(meta).getValue(isTop) ? null : new TileEntityTradePost();
 	}
 }

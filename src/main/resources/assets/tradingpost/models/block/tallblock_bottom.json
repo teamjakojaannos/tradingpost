@@ -1,6 +1,6 @@
 {
   "parent": "block/fence_post",
   "textures": {
-    "texture": "tradepost:blocks/tallblock_bottom"
+    "texture": "tradingpost:blocks/tallblock_bottom"
   }
 }

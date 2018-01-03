@@ -2,14 +2,14 @@
   "forge_marker": 1,
   "defaults": {
     "textures": {
-      "all": "tradepost:blocks/debug"
+      "all": "tradingpost:blocks/debug"
     }
   },
   "variants": {
     "normal": {
       "model": "cube_all",
       "textures": {
-        "all": "tradepost:blocks/debug"
+        "all": "tradingpost:blocks/debug"
       }
     },
     "inventory": {

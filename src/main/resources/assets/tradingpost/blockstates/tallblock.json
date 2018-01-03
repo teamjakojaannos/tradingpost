@@ -3,10 +3,10 @@
   "variants": {
     "istop": {
       "true": {
-        "model": "tradepost:tallblock_top"
+        "model": "tradingpost:tallblock_top"
       },
       "false": {
-        "model": "tradepost:tallblock_bottom"
+        "model": "tradingpost:tallblock_bottom"
       }
     }
   }

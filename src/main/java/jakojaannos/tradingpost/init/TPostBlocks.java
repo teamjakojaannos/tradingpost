@@ -1,5 +1,7 @@
-package jakojaannos.tradingpost;
+package jakojaannos.tradingpost.init;
 
+import jakojaannos.tradingpost.ModInfo;
+import jakojaannos.tradingpost.TradingPostMod;
 import jakojaannos.tradingpost.block.BlockTall;
 import jakojaannos.tradingpost.block.BlockTest;
 import jakojaannos.tradingpost.item.ItemTall;
@@ -15,13 +17,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @EventBusSubscriber
-public class TRDBlocks {
+public class TPostBlocks {
     private static final Logger logger = LogManager.getLogger("trading-post-blocks");
 
-    public static Block TEST_BLOCK = new BlockTest().setRegistryName(TradingPostMod.MODID, "testblock");
-    public static Block BLOCK_TALL = new BlockTall().setRegistryName(TradingPostMod.MODID, "tallblock");
+    public static Block TEST_BLOCK = new BlockTest().setRegistryName(ModInfo.MODID, "testblock");
+    public static Block BLOCK_TALL = new BlockTall().setRegistryName(ModInfo.MODID, "tallblock");
 
-    public static Item ITEM_TALL = new ItemTall().setRegistryName(TradingPostMod.MODID, "tallblock");
+    public static Item ITEM_TALL = new ItemTall().setRegistryName(ModInfo.MODID, "tallblock");
 
 
     /**

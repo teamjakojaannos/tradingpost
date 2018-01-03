@@ -1,7 +1,7 @@
 package jakojaannos.tradingpost.item;
 
-import jakojaannos.tradingpost.TRDBlocks;
-import jakojaannos.tradingpost.TRDCreativeTabs;
+import jakojaannos.tradingpost.init.TPostBlocks;
+import jakojaannos.tradingpost.init.TPostCreativeTabs;
 import jakojaannos.tradingpost.block.BlockTall;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -21,9 +21,9 @@ public class ItemTall extends Item {
 	private final Block block;
 
 	public ItemTall() {
-		this.block = TRDBlocks.BLOCK_TALL;
+		this.block = TPostBlocks.BLOCK_TALL;
 		setUnlocalizedName("tallBlock");
-		setCreativeTab(TRDCreativeTabs.DEVNULL);
+		setCreativeTab(TPostCreativeTabs.DEVNULL);
 	}
 
 	public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand,

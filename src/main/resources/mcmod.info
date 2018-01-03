@@ -1,14 +1,13 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
+  "modid": "tradingpost",
+  "name": "Trading Post",
+  "description": "'cos manual trading just ain't fun",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["DownbeatCoder", "hiekka"],
   "logoFile": "",
   "screenshots": [],
   "dependencies": []

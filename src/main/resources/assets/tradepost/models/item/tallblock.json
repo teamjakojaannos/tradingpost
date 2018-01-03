@@ -1,6 +1,0 @@
-{
-  "parent": "tradepost:block/tallblock_top",
-  "textures": {
-    "all": "tradepost:blocks/tallblock_top"
-  }
-}
