@@ -5,6 +5,8 @@ import java.util.Random;
 import jakojaannos.tradingpost.TPostGuiHandler;
 import jakojaannos.tradingpost.init.TPostBlocks;
 import jakojaannos.tradingpost.TradingPostMod;
+import jakojaannos.tradingpost.init.TPostCreativeTabs;
+import jakojaannos.tradingpost.init.TPostItems;
 import jakojaannos.tradingpost.tileentity.TileEntityTradePost;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -31,6 +33,7 @@ public class BlockTradingPost extends BlockContainer {
 	public BlockTradingPost() {
 		super(Material.WOOD);
 		setHardness(1.2F);
+		setCreativeTab(TPostCreativeTabs.DEVNULL);
 		setSoundType(SoundType.WOOD);
 		setUnlocalizedName("tradingpost");
 		setDefaultState(this.blockState.getBaseState().withProperty(isTop, false));
@@ -92,7 +95,7 @@ public class BlockTradingPost extends BlockContainer {
 	}
 
 	public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-		return state.getValue(isTop) ? Items.AIR : TPostBlocks.ITEM_TALL;
+		return state.getValue(isTop) ? Items.AIR : TPostItems.TRADING_POST;
 	}
 
 	public int getMetaFromState(IBlockState state) {

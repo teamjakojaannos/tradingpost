@@ -13,17 +13,17 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @EventBusSubscriber
+@ObjectHolder(ModInfo.MODID)
 public class TPostBlocks {
     private static final Logger LOGGER = LogManager.getLogger(ModInfo.MODID);
 
-    public static Block TEST_BLOCK = new BlockTest().setRegistryName(ModInfo.MODID, "testblock");
-    public static Block BLOCK_TALL = new BlockTradingPost().setRegistryName(ModInfo.MODID, "tradingpost");
-
-    public static Item ITEM_TALL = new ItemTradingPost().setRegistryName(ModInfo.MODID, "tradingpost");
+    public static final Block TEST_BLOCK = null;
+    public static final Block TRADING_POST = null;
 
 
     /**
@@ -32,8 +32,8 @@ public class TPostBlocks {
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         event.getRegistry().registerAll(
-                TEST_BLOCK,
-                BLOCK_TALL
+                new BlockTest().setRegistryName(ModInfo.MODID, "test_block"),
+                new BlockTradingPost().setRegistryName(ModInfo.MODID, "trading_post")
         );
     }
 
@@ -44,7 +44,7 @@ public class TPostBlocks {
     public static void registerItemBlocks(RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(
                 createItemBlockFor(TEST_BLOCK),
-                ITEM_TALL
+                new ItemTradingPost().setRegistryName(ModInfo.MODID, "trading_post")
         );
     }
 
@@ -61,7 +61,7 @@ public class TPostBlocks {
      * Registers ItemBlock models for blocks with manually created item block
      */
     private static void registerItemModels() {
-        registerItemModel(ITEM_TALL);
+        registerItemModel(TPostItems.TRADING_POST);
     }
 
     /**
