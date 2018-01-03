@@ -1,5 +1,6 @@
 package jakojaannos.tradingpost.client.gui.inventory;
 
+import jakojaannos.tradingpost.ModInfo;
 import jakojaannos.tradingpost.inventory.ContainerTradePost;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -12,8 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiTradePost extends GuiContainer {
 
-	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(
-			"textures/gui/container/furnace.png");
+	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(ModInfo.MODID,"textures/gui/container/tradingpost.png");
 	private final InventoryPlayer inventoryPlayer;
 	private final IInventory tileTradePost;
 
@@ -32,22 +32,11 @@ public class GuiTradePost extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+		// Draw background
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
 		int marginHorizontal = (width - xSize) / 2;
 		int marginVertical = (height - ySize) / 2;
 		drawTexturedModalRect(marginHorizontal, marginVertical, 0, 0, xSize, ySize);
-
-		// Draw progress indicator
-		int progressLevel = getProgressLevel(24);
-		drawTexturedModalRect(marginHorizontal + 79, marginVertical + 34, 176, 14, progressLevel + 1, 16);
 	}
-
-	private int getProgressLevel(int progressIndicatorPixelWidth) {
-		int ticksGrindingItemSoFar = tileTradePost.getField(2);
-		int ticksPerItem = tileTradePost.getField(3);
-		return ticksPerItem != 0 && ticksGrindingItemSoFar != 0
-				? ticksGrindingItemSoFar * progressIndicatorPixelWidth / ticksPerItem : 0;
-	}
-
 }

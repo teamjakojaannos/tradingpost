@@ -33,8 +33,16 @@ public class ContainerTradePost extends Container {
         }
 
         // Add tile-entity slots
-        addSlotToContainer(new Slot(tileTradePost, TileEntityTradePost.slotEnum.INPUT_SLOT.ordinal(), 56, 35));
-        addSlotToContainer(new Slot(tileTradePost, TileEntityTradePost.slotEnum.OUTPUT_SLOT.ordinal(), 116, 35));
+        addSlotToContainer(new Slot(tileTradePost, TileEntityTradePost.ESlots.INPUT_1.ordinal(), 36, 53));
+        addSlotToContainer(new Slot(tileTradePost, TileEntityTradePost.ESlots.INPUT_2.ordinal(), 62, 53));
+
+        addSlotToContainer(new Slot(tileTradePost, TileEntityTradePost.ESlots.OUTPUT.ordinal(), 120, 53) {
+            // Prevent placing items in the output slot
+            @Override
+            public boolean isItemValid(ItemStack stack) {
+                return false;
+            }
+        });
     }
 
 
@@ -51,8 +59,8 @@ public class ContainerTradePost extends Container {
      * - 0-8:   hotbar
      * - 9-35:  inventory
      * 36-37: tile-entity
-     * - 36:	input
-     * - 37:	output
+     * - 36-37:	input
+     * - 38:	output
      */
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex) {
@@ -67,8 +75,8 @@ public class ContainerTradePost extends Container {
 
         // If slot in player inventory was clicked
         if (slotIndex < 36) {
-            // Try to merge with input slot
-            if (!mergeItemStack(clickedStack, 36, 37, false)) {
+            // Try to merge with input slots
+            if (!mergeItemStack(clickedStack, 36, 38, false)) {
                 return ItemStack.EMPTY;
             }
         }
@@ -94,5 +102,4 @@ public class ContainerTradePost extends Container {
         clickedSlot.onTake(player, clickedStack);
         return clickedStack.copy();
     }
-
 }

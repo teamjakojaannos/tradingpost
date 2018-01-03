@@ -1,20 +1,14 @@
 package jakojaannos.tradingpost.tileentity;
 
 import jakojaannos.tradingpost.ModInfo;
-import jakojaannos.tradingpost.inventory.ContainerTradePost;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityLockable;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -27,223 +21,214 @@ import java.util.Arrays;
 
 public class TileEntityTradePost extends TileEntity implements ITickable, IInventory {
 
-	private static final Logger LOGGER = LogManager.getLogger(ModInfo.MODID);
+    private static final Logger LOGGER = LogManager.getLogger(ModInfo.MODID);
 
-	// enumerate the slots
-	public enum slotEnum {
-		INPUT_SLOT, OUTPUT_SLOT
-	}
+    public enum ESlots {
+        INPUT_1, INPUT_2, OUTPUT
+    }
 
-	private ItemStack[] itemsInSlots = new ItemStack[2];
+    private ItemStack[] itemsInSlots = new ItemStack[]{ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY};
 
-	@Nonnull
-	private String customName;
+    @Nonnull
+    private String customName = "";
 
-	public TileEntityTradePost() {
-		customName = "";
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        super.writeToNBT(compound);
 
-		for (int i = 0; i < itemsInSlots.length; i++) {
-			itemsInSlots[i] = ItemStack.EMPTY;
-		}
-	}
+        // Write items to a list
+        NBTTagList itemList = new NBTTagList();
+        for (int i = 0; i < itemsInSlots.length; i++) {
+            // Write the slot index and item stack for each slot
+            NBTTagCompound slotCompound = new NBTTagCompound();
+            slotCompound.setByte("Slot", (byte) i);
+            itemsInSlots[i].writeToNBT(slotCompound);
 
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		super.writeToNBT(compound);
+            itemList.appendTag(slotCompound);
+        }
 
-		// Write items to a list
-		NBTTagList itemList = new NBTTagList();
-		for (int i = 0; i < itemsInSlots.length; i++) {
-			// Write the slot index and item stack for each slot
-			NBTTagCompound slotCompound = new NBTTagCompound();
-			slotCompound.setByte("Slot", (byte) i);
-			itemsInSlots[i].writeToNBT(slotCompound);
+        // Add item list to the compound
+        compound.setTag("Items", itemList);
 
-			itemList.appendTag(slotCompound);
-		}
+        // If we have a custom name, write it too
+        if (hasCustomName()) {
+            compound.setString("CustomName", customName);
+        }
 
-		// Add item list to the compound
-		compound.setTag("Items", itemList);
+        return compound;
+    }
 
-		// If we have a custom name, write it too
-		if (hasCustomName()) {
-			compound.setString("CustomName", customName);
-		}
+    @Override
+    public void readFromNBT(NBTTagCompound compound) {
+        super.readFromNBT(compound);
 
-		return compound;
-	}
+        // Read items
+        NBTTagList itemList = compound.getTagList("Items", 10);
+        Arrays.fill(itemsInSlots, ItemStack.EMPTY);
 
-	@Override
-	public void readFromNBT(NBTTagCompound compound) {
-		super.readFromNBT(compound);
+        for (int i = 0; i < itemList.tagCount(); i++) {
+            NBTTagCompound slotCompound = itemList.getCompoundTagAt(i);
+            int slot = slotCompound.getByte("Slot");
 
-		// Read items
-		NBTTagList itemList = compound.getTagList("Items", 10);
-		Arrays.fill(itemsInSlots, ItemStack.EMPTY);
+            if (slot >= 0 && slot < itemsInSlots.length) {
+                itemsInSlots[slot] = new ItemStack(slotCompound);
+            } else {
+                LOGGER.warn("Invalid slot index while deserializing Trade Post items: {}", slot);
+            }
+        }
 
-		for (int i = 0; i < itemList.tagCount(); i++) {
-			NBTTagCompound slotCompound = itemList.getCompoundTagAt(i);
-			int slot = slotCompound.getByte("Slot");
+        // Read custom name
+        customName = compound.getString("CustomName");
+    }
 
-			if (slot >= 0 && slot < itemsInSlots.length) {
-				itemsInSlots[slot] = new ItemStack(slotCompound);
-			} else {
-				LOGGER.warn("Invalid slot index while deserializing Trade Post items: {}", slot);
-			}
-		}
+    @Override
+    public int getSizeInventory() {
+        return itemsInSlots.length;
+    }
 
-		// Read custom name
-		customName = compound.getString("CustomName");
-	}
+    @Override
+    public boolean isEmpty() {
+        for (ItemStack itemstack : itemsInSlots) {
+            if (!itemstack.isEmpty()) {
+                return false;
+            }
+        }
 
-	@Override
-	public int getSizeInventory() {
-		return itemsInSlots.length;
-	}
+        return true;
+    }
 
-	@Override
-	public boolean isEmpty() {
-		for (ItemStack itemstack : itemsInSlots) {
-			if (!itemstack.isEmpty()) {
-				return false;
-			}
-		}
+    @Override
+    public ItemStack getStackInSlot(int index) {
+        return itemsInSlots[index];
+    }
 
-		return true;
-	}
+    @Override
+    public ItemStack decrStackSize(int index, int count) {
+        ItemStack itemstack;
 
-	@Override
-	public ItemStack getStackInSlot(int index) {
-		return itemsInSlots[index];
-	}
+        if (itemsInSlots[index].getCount() <= count) {
+            itemstack = itemsInSlots[index];
+            itemsInSlots[index] = ItemStack.EMPTY;
+        } else {
+            itemstack = itemsInSlots[index].splitStack(count);
 
-	@Override
-	public ItemStack decrStackSize(int index, int count) {
-		ItemStack itemstack;
+            if (itemsInSlots[index].getCount() == 0) {
+                itemsInSlots[index] = ItemStack.EMPTY;
+            }
+        }
 
-		if (itemsInSlots[index].getCount() <= count) {
-			itemstack = itemsInSlots[index];
-			itemsInSlots[index] = ItemStack.EMPTY;
-		} else {
-			itemstack = itemsInSlots[index].splitStack(count);
+        markDirty();
+        return itemstack;
+    }
 
-			if (itemsInSlots[index].getCount() == 0) {
-				itemsInSlots[index] = ItemStack.EMPTY;
-			}
-		}
+    @Override
+    public ItemStack removeStackFromSlot(int index) {
+        // TODO:
+        return itemsInSlots[index];
+    }
 
-		markDirty();
-		return itemstack;
-	}
+    @Override
+    public void setInventorySlotContents(int index, ItemStack stack) {
+        itemsInSlots[index] = stack;
 
-	@Override
-	public ItemStack removeStackFromSlot(int index) {
-		// TODO:
-		return itemsInSlots[index];
-	}
+        if (!stack.isEmpty() && stack.getCount() > getInventoryStackLimit()) {
+            stack.setCount(getInventoryStackLimit());
+        }
+        markDirty();
+    }
 
-	@Override
-	public void setInventorySlotContents(int index, ItemStack stack) {
-		itemsInSlots[index] = stack;
+    @Override
+    public int getInventoryStackLimit() {
+        return 64;
+    }
 
-		if (!stack.isEmpty() && stack.getCount() > getInventoryStackLimit()) {
-			stack.setCount(getInventoryStackLimit());
-		}
-		markDirty();
-	}
+    @Override
+    public boolean isUsableByPlayer(EntityPlayer player) {
+        return world.getTileEntity(pos) == this && player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64.0D;
+    }
 
-	@Override
-	public int getInventoryStackLimit() {
-		return 64;
-	}
+    @Override
+    public void openInventory(EntityPlayer player) {
+    }
 
-	@Override
-	public boolean isUsableByPlayer(EntityPlayer player) {
-		return world.getTileEntity(pos) == this && player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64.0D;
-	}
+    @Override
+    public void closeInventory(EntityPlayer player) {
+    }
 
-	@Override
-	public void openInventory(EntityPlayer player) {
-	}
+    @Override
+    public boolean isItemValidForSlot(int index, ItemStack stack) {
+        return index == ESlots.INPUT_1.ordinal();
+    }
 
-	@Override
-	public void closeInventory(EntityPlayer player) {
-	}
+    @Override
+    public int getField(int id) {
+        return 0;
+    }
 
-	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		return index == slotEnum.INPUT_SLOT.ordinal();
-	}
+    @Override
+    public void setField(int id, int value) {
+    }
 
-	@Override
-	public int getField(int id) {
-		return 0;
-	}
+    @Override
+    public int getFieldCount() {
+        return 0;
+    }
 
-	@Override
-	public void setField(int id, int value) {
-	}
+    @Override
+    public void clear() {
+        for (int i = 0; i < itemsInSlots.length; ++i) {
+            itemsInSlots[i] = ItemStack.EMPTY;
+        }
+    }
 
-	@Override
-	public int getFieldCount() {
-		return 0;
-	}
+    @Override
+    public ITextComponent getDisplayName() {
+        return new TextComponentTranslation(getName());
+    }
 
-	@Override
-	public void clear() {
-		for (int i = 0; i < itemsInSlots.length; ++i) {
-			itemsInSlots[i] = ItemStack.EMPTY;
-		}
-	}
+    @Override
+    public String getName() {
+        return hasCustomName() ? customName : "container.post";
+    }
 
-	@Override
-	public ITextComponent getDisplayName() {
-		return new TextComponentTranslation(getName());
-	}
+    @Override
+    public boolean hasCustomName() {
+        return !customName.isEmpty();
+    }
 
-	@Override
-	public String getName() {
-		return hasCustomName() ? customName : "container.post";
-	}
+    public void setCustomName(String customName) {
+        this.customName = customName;
+    }
 
-	@Override
-	public boolean hasCustomName() {
-		return !customName.isEmpty();
-	}
-
-	public void setCustomName(String customName) {
-		this.customName = customName;
-	}
-
-	@Override
-	public void update() {
-	}
+    @Override
+    public void update() {
+    }
 
 
-	// Network sync
+    // Network sync
 
-	@Nullable
-	@Override
-	public SPacketUpdateTileEntity getUpdatePacket() {
-		NBTTagCompound updateTag = getUpdateTag();
-		return new SPacketUpdateTileEntity(pos, 0, updateTag);
-	}
+    @Nullable
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        NBTTagCompound updateTag = getUpdateTag();
+        return new SPacketUpdateTileEntity(pos, 0, updateTag);
+    }
 
-	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-		NBTTagCompound updateTag = pkt.getNbtCompound();
-		handleUpdateTag(updateTag);
-	}
+    @Override
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+        NBTTagCompound updateTag = pkt.getNbtCompound();
+        handleUpdateTag(updateTag);
+    }
 
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		NBTTagCompound updateTag = new NBTTagCompound();
-		writeToNBT(updateTag);
-		return updateTag;
-	}
+    @Override
+    public NBTTagCompound getUpdateTag() {
+        NBTTagCompound updateTag = new NBTTagCompound();
+        writeToNBT(updateTag);
+        return updateTag;
+    }
 
-	@Override
-	public void handleUpdateTag(NBTTagCompound updateTag) {
-		readFromNBT(updateTag);
-	}
+    @Override
+    public void handleUpdateTag(NBTTagCompound updateTag) {
+        readFromNBT(updateTag);
+    }
 }
