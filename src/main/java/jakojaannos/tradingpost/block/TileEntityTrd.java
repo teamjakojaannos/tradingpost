@@ -57,19 +57,19 @@ public class TileEntityTrd extends TileEntityLockable implements ITickable, ISid
 
 			if (postItemStackArray[index].getCount() <= count) {
 				itemstack = postItemStackArray[index];
-				postItemStackArray[index] = null;
+				postItemStackArray[index] = ItemStack.EMPTY;
 				return itemstack;
 			} else {
 				itemstack = postItemStackArray[index].splitStack(count);
 
 				if (postItemStackArray[index].getCount() == 0) {
-					postItemStackArray[index] = null;
+					postItemStackArray[index] = ItemStack.EMPTY;
 				}
 
 				return itemstack;
 			}
 		} else {
-			return null;
+			return ItemStack.EMPTY;
 		}
 	}
 
