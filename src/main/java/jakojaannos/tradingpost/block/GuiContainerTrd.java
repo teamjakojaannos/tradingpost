@@ -1,6 +1,5 @@
 package jakojaannos.tradingpost.block;
 
-import jakojaannos.tradingpost.TradingPostMod;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -12,8 +11,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiContainerTrd extends GuiContainer {
 
-//	private static final ResourceLocation grinderGuiTextures = new ResourceLocation(
-//			TradingPostMod.MODID + ":textures/gui/container/post.png");
+	private static final ResourceLocation grinderGuiTextures = new ResourceLocation(
+			"textures/gui/container/furnace.png");
 	private final InventoryPlayer inventoryPlayer;
 	private final IInventory tileGrinder;
 
@@ -36,7 +35,7 @@ public class GuiContainerTrd extends GuiContainer {
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-//		mc.getTextureManager().bindTexture(grinderGuiTextures);
+		mc.getTextureManager().bindTexture(grinderGuiTextures);
 		int marginHorizontal = (width - xSize) / 2;
 		int marginVertical = (height - ySize) / 2;
 		drawTexturedModalRect(marginHorizontal, marginVertical, 0, 0, xSize, ySize);

@@ -2,6 +2,7 @@ package jakojaannos.tradingpost.block;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -21,6 +22,12 @@ public class TileEntityTrd extends TileEntityLockable implements ITickable, ISid
 	private static final int[] slotsSides = new int[] {};
 	private ItemStack[] postItemStackArray = new ItemStack[2];
 	private String postCustomName;
+
+	public TileEntityTrd() {
+		for (int i = 0; i < postItemStackArray.length; i++) {
+			postItemStackArray[i] = new ItemStack(Blocks.AIR);
+		}
+	}
 
 	@Override
 	public int getSizeInventory() {
@@ -68,8 +75,8 @@ public class TileEntityTrd extends TileEntityLockable implements ITickable, ISid
 
 	@Override
 	public ItemStack removeStackFromSlot(int index) {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO:
+		return postItemStackArray[index];
 	}
 
 	@Override
