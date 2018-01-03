@@ -25,7 +25,7 @@ public class TileEntityTrd extends TileEntityLockable implements ITickable, ISid
 
 	public TileEntityTrd() {
 		for (int i = 0; i < postItemStackArray.length; i++) {
-			postItemStackArray[i] = new ItemStack(Blocks.AIR);
+			postItemStackArray[i] = ItemStack.EMPTY;
 		}
 	}
 
@@ -143,7 +143,7 @@ public class TileEntityTrd extends TileEntityLockable implements ITickable, ISid
 	@Override
 	public void clear() {
 		for (int i = 0; i < postItemStackArray.length; ++i) {
-			postItemStackArray[i] = null;
+			postItemStackArray[i] = ItemStack.EMPTY;
 		}
 	}
 
