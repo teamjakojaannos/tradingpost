@@ -3,7 +3,6 @@ package jakojaannos.tradingpost.block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -44,32 +43,6 @@ public class ContainerTrd extends Container {
 	// super.addCraftingToCrafters(listener);
 	// listener.func_175173_a(this, tileGrinder);
 	// }
-
-	@Override
-	/**
-	 * Looks for changes made in the container, sends them to every listener.
-	 */
-	public void detectAndSendChanges() {
-		for (int i = 0; i < this.inventorySlots.size(); ++i) {
-			ItemStack itemstack = ((Slot) this.inventorySlots.get(i)).getStack();
-			ItemStack itemstack1 = this.inventoryItemStacks.get(i);
-
-			if (itemstack == null || itemstack1 == null) {
-				continue;
-			}
-
-			if (!ItemStack.areItemStacksEqual(itemstack1, itemstack)) {
-				boolean clientStackChanged = !ItemStack.areItemStacksEqualUsingNBTShareTag(itemstack1, itemstack);
-				itemstack1 = itemstack.isEmpty() ? ItemStack.EMPTY : itemstack.copy();
-				this.inventoryItemStacks.set(i, itemstack1);
-
-				if (clientStackChanged)
-					for (int j = 0; j < this.listeners.size(); ++j) {
-						((IContainerListener) this.listeners.get(j)).sendSlotContents(this, i, itemstack1);
-					}
-			}
-		}
-	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
