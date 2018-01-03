@@ -1,0 +1,6 @@
+{
+  "parent": "tradingpost:block/tradingpost_top",
+  "textures": {
+    "all": "tradingpost:blocks/tradingpost_top"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "tradingpost:blocks/tallblock_top"
+    "all": "tradingpost:blocks/tradingpost_top"
   }
 }

@@ -2,7 +2,7 @@ package jakojaannos.tradingpost.item;
 
 import jakojaannos.tradingpost.init.TPostBlocks;
 import jakojaannos.tradingpost.init.TPostCreativeTabs;
-import jakojaannos.tradingpost.block.BlockTall;
+import jakojaannos.tradingpost.block.BlockTradingPost;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
@@ -16,18 +16,33 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class ItemTall extends Item {
+public class ItemTradingPost extends Item {
 
 	private final Block block;
 
-	public ItemTall() {
+	public ItemTradingPost() {
 		this.block = TPostBlocks.BLOCK_TALL;
-		setUnlocalizedName("tallBlock");
+		setUnlocalizedName("tradingpost");
 		setCreativeTab(TPostCreativeTabs.DEVNULL);
 	}
 
+	@Override
+	public String getUnlocalizedName() {
+		return super.getUnlocalizedName();
+	}
+
+	@Override
+	public String getUnlocalizedNameInefficiently(ItemStack stack) {
+		return super.getUnlocalizedNameInefficiently(stack);
+	}
+
+	@Override
+	public String getUnlocalizedName(ItemStack stack) {
+		return super.getUnlocalizedName(stack);
+	}
+
 	public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand,
-			EnumFacing facing, float hitX, float hitY, float hitZ) {
+									  EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if (facing != EnumFacing.UP) {
 			return EnumActionResult.FAIL;
 		} else {
@@ -65,8 +80,8 @@ public class ItemTall extends Item {
 		BlockPos up = pos.up();
 		IBlockState iblockstate = block.getDefaultState();
 
-		worldIn.setBlockState(pos, iblockstate.withProperty(BlockTall.isTop, false), 2);
-		worldIn.setBlockState(up, iblockstate.withProperty(BlockTall.isTop, true), 2);
+		worldIn.setBlockState(pos, iblockstate.withProperty(BlockTradingPost.isTop, false), 2);
+		worldIn.setBlockState(up, iblockstate.withProperty(BlockTradingPost.isTop, true), 2);
 
 		worldIn.notifyNeighborsOfStateChange(pos, block, false);
 		worldIn.notifyNeighborsOfStateChange(up, block, false);

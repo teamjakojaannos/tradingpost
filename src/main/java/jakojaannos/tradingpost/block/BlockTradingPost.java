@@ -24,15 +24,15 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class BlockTall extends BlockContainer {
+public class BlockTradingPost extends BlockContainer {
 
 	public static final PropertyBool isTop = PropertyBool.create("istop");
 
-	public BlockTall() {
+	public BlockTradingPost() {
 		super(Material.WOOD);
 		setHardness(1.2F);
 		setSoundType(SoundType.WOOD);
-		setUnlocalizedName("tallBlock");
+		setUnlocalizedName("tradingpost");
 		setDefaultState(this.blockState.getBaseState().withProperty(isTop, false));
 	}
 

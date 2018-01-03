@@ -2,9 +2,9 @@ package jakojaannos.tradingpost.init;
 
 import jakojaannos.tradingpost.ModInfo;
 import jakojaannos.tradingpost.TradingPostMod;
-import jakojaannos.tradingpost.block.BlockTall;
+import jakojaannos.tradingpost.block.BlockTradingPost;
 import jakojaannos.tradingpost.block.BlockTest;
-import jakojaannos.tradingpost.item.ItemTall;
+import jakojaannos.tradingpost.item.ItemTradingPost;
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -18,12 +18,12 @@ import org.apache.logging.log4j.Logger;
 
 @EventBusSubscriber
 public class TPostBlocks {
-    private static final Logger logger = LogManager.getLogger("trading-post-blocks");
+    private static final Logger LOGGER = LogManager.getLogger(ModInfo.MODID);
 
     public static Block TEST_BLOCK = new BlockTest().setRegistryName(ModInfo.MODID, "testblock");
-    public static Block BLOCK_TALL = new BlockTall().setRegistryName(ModInfo.MODID, "tallblock");
+    public static Block BLOCK_TALL = new BlockTradingPost().setRegistryName(ModInfo.MODID, "tradingpost");
 
-    public static Item ITEM_TALL = new ItemTall().setRegistryName(ModInfo.MODID, "tallblock");
+    public static Item ITEM_TALL = new ItemTradingPost().setRegistryName(ModInfo.MODID, "tradingpost");
 
 
     /**
@@ -50,7 +50,6 @@ public class TPostBlocks {
 
     /**
      * Registers ItemBlock models
-     * TODO: Debug if this event handler crashes on the server
      */
     @SubscribeEvent
     public static void registerModels(ModelRegistryEvent event) {
@@ -80,7 +79,7 @@ public class TPostBlocks {
     private static void registerItemModel(Block block) {
         Item itemBlock = Item.getItemFromBlock(block);
         if (itemBlock == Items.AIR) {
-            logger.error(String.format(
+            LOGGER.error(String.format(
                     "Tried to register item model for block %s (%s), but getItemFromBlock returned AIR!",
                     block.getUnlocalizedName(),
                     block.getLocalizedName()));
