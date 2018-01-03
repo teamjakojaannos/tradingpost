@@ -2,7 +2,6 @@ package jakojaannos.tradingpost.block;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -52,24 +51,20 @@ public class TileEntityTrd extends TileEntityLockable implements ITickable, ISid
 
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
-		if (postItemStackArray[index] != null) {
-			ItemStack itemstack;
+		ItemStack itemstack;
 
-			if (postItemStackArray[index].getCount() <= count) {
-				itemstack = postItemStackArray[index];
-				postItemStackArray[index] = null;
-				return itemstack;
-			} else {
-				itemstack = postItemStackArray[index].splitStack(count);
-
-				if (postItemStackArray[index].getCount() == 0) {
-					postItemStackArray[index] = null;
-				}
-
-				return itemstack;
-			}
+		if (postItemStackArray[index].getCount() <= count) {
+			itemstack = postItemStackArray[index];
+			postItemStackArray[index] = ItemStack.EMPTY;
+			return itemstack;
 		} else {
-			return null;
+			itemstack = postItemStackArray[index].splitStack(count);
+
+			if (postItemStackArray[index].getCount() == 0) {
+				postItemStackArray[index] = ItemStack.EMPTY;
+			}
+
+			return itemstack;
 		}
 	}
 

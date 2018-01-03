@@ -44,34 +44,6 @@ public class ContainerTrd extends Container {
 	// listener.func_175173_a(this, tileGrinder);
 	// }
 
-	/**
-	 * Looks for changes made in the container, sends them to every listener.
-	 */
-	// @Override
-	// public void detectAndSendChanges() {
-	// super.detectAndSendChanges();
-	//
-	// for (int i = 0; i < crafters.size(); ++i) {
-	// ICrafting icrafting = (ICrafting) crafters.get(i);
-	//
-	// if (ticksGrindingItemSoFar != tileGrinder.getField(2)) {
-	// icrafting.sendProgressBarUpdate(this, 2, tileGrinder.getField(2));
-	// }
-	//
-	// if (timeCanGrind != tileGrinder.getField(0)) {
-	// icrafting.sendProgressBarUpdate(this, 0, tileGrinder.getField(0));
-	// }
-	//
-	// if (ticksPerItem != tileGrinder.getField(3)) {
-	// icrafting.sendProgressBarUpdate(this, 3, tileGrinder.getField(3));
-	// }
-	// }
-	//
-	// ticksGrindingItemSoFar = tileGrinder.getField(2);
-	// timeCanGrind = tileGrinder.getField(0);
-	// ticksPerItem = tileGrinder.getField(3);
-	// }
-
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void updateProgressBar(int id, int data) {
