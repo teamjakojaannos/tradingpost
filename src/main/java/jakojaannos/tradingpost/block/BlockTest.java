@@ -8,7 +8,7 @@ public class BlockTest extends Block {
 
 	public BlockTest() {
 		super(Material.ROCK);
-		setUnlocalizedName("testBlock");
+		setUnlocalizedName("test_block");
 		setCreativeTab(TPostCreativeTabs.DEVNULL);
 	}
 }

@@ -1,5 +1,5 @@
-item.tradingpost.name=Trading Post
-tile.testBlock.name=Test Block
+tile.trading_post.name=Trading Post
+tile.test_block.name=Test Block
 
 itemGroup.devnull=dev/NULL/
 

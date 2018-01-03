@@ -35,7 +35,7 @@ public class BlockTradingPost extends BlockContainer {
 		setHardness(1.2F);
 		setCreativeTab(TPostCreativeTabs.DEVNULL);
 		setSoundType(SoundType.WOOD);
-		setUnlocalizedName("tradingpost");
+		setUnlocalizedName("trading_post");
 		setDefaultState(this.blockState.getBaseState().withProperty(isTop, false));
 	}
 
